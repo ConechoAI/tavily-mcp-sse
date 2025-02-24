@@ -4,7 +4,7 @@ services:
     restart: always
     image: tavily-mcp-sse:latest
     ports:
-      - "3000"
+      - "3000:3000"
     volumes:
       - .env:/app/build/.env
     command: ["sh", "-c", "cd /app/build && node index.js"]
