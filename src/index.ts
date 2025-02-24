@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
+import express from "express";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 import {CallToolRequestSchema, ListToolsRequestSchema, Tool} from "@modelcontextprotocol/sdk/types.js";
 import axios from "axios";
 import dotenv from "dotenv";
@@ -9,6 +10,7 @@ import { McpError, ErrorCode } from "@modelcontextprotocol/sdk/types.js";
 
 dotenv.config();
 
+const PORT = process.env.PORT || 3000;
 const API_KEY = process.env.TAVILY_API_KEY;
 if (!API_KEY) {
   throw new Error("TAVILY_API_KEY environment variable is required");
@@ -46,7 +48,7 @@ class TavilyClient {
   constructor() {
     this.server = new Server(
       {
-        name: "tavily-mcp",
+        name: "tavily-mcp-sse",
         version: "0.1.0",
       },
       {
@@ -258,9 +260,25 @@ class TavilyClient {
 
 
   async run(): Promise<void> {
-    const transport = new StdioServerTransport();
-    await this.server.connect(transport);
-    console.error("Tavily MCP server running on stdio");
+    const app = express();
+
+    let transport: SSEServerTransport;
+    
+    app.get("/sse", async (req, res) => {
+      console.log("Received connection");
+      const transport = new SSEServerTransport("/messages", res);
+      await this.server.connect(transport);
+    });
+    
+    app.post("/messages", async (req, res) => {
+      console.log("Received message");
+
+      await transport.handlePostMessage(req, res);
+    });
+    
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
   }
 
   async search(params: any): Promise<TavilyResponse> {
