@@ -6,7 +6,8 @@ services:
     ports:
       - "3000"
     volumes:
-      - .env:/app/dist/.env
+      - .env:/app/build/.env
+    command: ["sh", "-c", "cd /app/build && node index.js"]
     # environment:
     #   - PORT=3000
     #   - TAVILY_API_KEY=''
