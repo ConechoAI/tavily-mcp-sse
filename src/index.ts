@@ -5,7 +5,7 @@ import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 import {CallToolRequestSchema, ListToolsRequestSchema, Tool} from "@modelcontextprotocol/sdk/types.js";
 import axios from "axios";
-import dotenv from "dotenv";
+import * as dotenv from 'dotenv';
 import { McpError, ErrorCode } from "@modelcontextprotocol/sdk/types.js";
 
 dotenv.config();
@@ -261,18 +261,16 @@ class TavilyClient {
 
   async run(): Promise<void> {
     const app = express();
-
     let transport: SSEServerTransport;
     
-    app.get("/sse", async (req, res) => {
+    app.get("/sse", async (req: any, res: any) => {
       console.log("Received connection");
-      const transport = new SSEServerTransport("/messages", res);
+      transport = new SSEServerTransport("/messages", res);
       await this.server.connect(transport);
     });
     
-    app.post("/messages", async (req, res) => {
+    app.post("/messages", async (req: any, res: any) => {
       console.log("Received message");
-
       await transport.handlePostMessage(req, res);
     });
     

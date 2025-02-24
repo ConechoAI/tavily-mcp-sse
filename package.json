@@ -2,7 +2,6 @@
   "name": "tavily-mcp",
   "version": "0.1.2",
   "description": "MCP server for advanced web search using Tavily",
-  "type": "module",
   "bin": {
     "tavily-mcp": "./build/index.js"
   },
@@ -41,10 +40,12 @@
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "0.6.0",
+    "axios": "^1.6.7",
     "dotenv": "^16.4.5",
-    "axios": "^1.6.7"
+    "express": "^4.21.2"
   },
   "devDependencies": {
+    "@types/express": "^5.0.0",
     "@types/node": "^20.11.24",
     "typescript": "^5.3.3"
   }

@@ -1,0 +1,12 @@
+version: '2'
+services:
+  server:
+    restart: always
+    image: tavily-mcp-sse:latest
+    ports:
+      - "3000"
+    volumes:
+      - .env:/app/dist/.env
+    # environment:
+    #   - PORT=3000
+    #   - TAVILY_API_KEY=''
